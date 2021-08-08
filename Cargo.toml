@@ -1,0 +1,12 @@
+[package]
+name = "z-base-32"
+version = "0.1.0"
+edition = "2018"
+authors = ["Matus Ferech <matus.ferech@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/matusf/z-base-32"
+readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
