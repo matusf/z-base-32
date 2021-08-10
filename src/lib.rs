@@ -1,3 +1,7 @@
+#[cfg(test)]
+#[macro_use]
+extern crate quickcheck;
+
 const ALPHABET: &[u8] = b"ybndrfg8ejkmcpqxot1uwisza345h769";
 const INVERSE_ALPHABET: [i8; 123] = [
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -79,14 +83,24 @@ mod tests {
 
     #[test]
     fn encode_decode() {
-        assert_eq!(
-            String::from_utf8(decode(&encode(b"foo")).unwrap()).unwrap(),
-            "foo".to_string()
-        )
+        assert_eq!(decode(&encode(b"foo")).unwrap(), b"foo")
     }
 
     #[test]
     fn invalid_decode() {
         assert_eq!(decode("bar#"), None)
+    }
+
+    quickcheck! {
+        fn prop(input: Vec<u8>) -> bool {
+            decode(&encode(&input)).unwrap() == input
+        }
+    }
+
+    quickcheck! {
+        fn not_panic(input: String) -> bool {
+            decode(&input);
+            true
+        }
     }
 }
