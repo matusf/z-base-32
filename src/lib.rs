@@ -2,6 +2,9 @@
 #[macro_use]
 extern crate quickcheck;
 
+#[cfg(feature = "python")]
+use pyo3::{prelude::*, types::PyBytes};
+
 const ALPHABET: &[u8] = b"ybndrfg8ejkmcpqxot1uwisza345h769";
 const INVERSE_ALPHABET: [i8; 123] = [
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -12,6 +15,7 @@ const INVERSE_ALPHABET: [i8; 123] = [
     23,
 ];
 
+#[cfg_attr(feature = "python", pyfunction)]
 pub fn encode(input: &[u8]) -> String {
     let mut result = Vec::new();
     let chunks = input.chunks(5);
@@ -41,6 +45,7 @@ pub fn encode(input: &[u8]) -> String {
     unsafe { String::from_utf8_unchecked(result) }
 }
 
+#[cfg_attr(feature = "python", pyfunction)]
 pub fn decode(input: &str) -> Option<Vec<u8>> {
     let mut result = Vec::new();
     for chunk in input.as_bytes().chunks(8) {
@@ -66,6 +71,17 @@ pub fn decode(input: &str) -> Option<Vec<u8>> {
         result.pop();
     }
     Some(result)
+}
+
+#[cfg(feature = "python")]
+#[pymodule]
+fn zbase32(py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(encode, m)?)?;
+    #[pyfn(m)]
+    fn decode<'a>(py: Python<'a>, input: &'a str) -> Option<&'a PyBytes> {
+        crate::decode(input).as_ref().map(|b| PyBytes::new(py, b))
+    }
+    Ok(())
 }
 
 #[cfg(test)]

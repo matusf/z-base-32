@@ -9,7 +9,19 @@ readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name = "zbase32"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+python = ["pyo3"]
+
 [dependencies]
+
+[dependencies.pyo3]
+version = "0.14.2"
+features = ["extension-module"]
+optional = true
 
 [dev-dependencies]
 quickcheck = "1"
