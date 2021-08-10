@@ -30,7 +30,11 @@ pub fn encode(input: &[u8]) -> String {
         result.push(ALPHABET[(buf[4] & 0x1F) as usize]);
     }
 
-    String::from_utf8(result[..(input.len() * 8 / 5 + 1)].to_vec()).unwrap()
+    let expected_len = (input.len() as f32 * 8.0 / 5.0).ceil() as usize;
+    for _ in 0..(result.len() - expected_len) {
+        result.pop();
+    }
+    unsafe { String::from_utf8_unchecked(result) }
 }
 
 pub fn decode(input: &str) -> Option<Vec<u8>> {
@@ -54,7 +58,10 @@ pub fn decode(input: &str) -> Option<Vec<u8>> {
         result.push((buf[6] << 5) | buf[7]);
     }
 
-    Some(result[..input.len() * 5 / 8].to_vec())
+    for _ in 0..(result.len() - input.len() * 5 / 8) {
+        result.pop();
+    }
+    Some(result)
 }
 
 #[cfg(test)]
