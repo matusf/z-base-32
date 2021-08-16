@@ -1,9 +1,13 @@
+#[cfg(feature = "python")]
+mod python;
+#[cfg(feature = "python")]
+use pyo3::{create_exception, exceptions::PyException, prelude::*, types::PyBytes};
+
 #[cfg(test)]
 #[macro_use]
 extern crate quickcheck;
 
-#[cfg(feature = "python")]
-use pyo3::{prelude::*, types::PyBytes};
+use std::fmt;
 
 const ALPHABET: &[u8] = b"ybndrfg8ejkmcpqxot1uwisza345h769";
 const INVERSE_ALPHABET: [i8; 123] = [
@@ -14,6 +18,15 @@ const INVERSE_ALPHABET: [i8; 123] = [
     -1, 24, 1, 12, 3, 8, 5, 6, 28, 21, 9, 10, -1, 11, 2, 16, 13, 14, 4, 22, 17, 19, -1, 20, 15, 0,
     23,
 ];
+
+#[derive(Debug, PartialEq)]
+pub struct DecodeError;
+
+impl fmt::Display for DecodeError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "DecodeError: Non-zbase32 digit found")
+    }
+}
 
 #[cfg_attr(feature = "python", pyfunction)]
 pub fn encode(input: &[u8]) -> String {
@@ -45,17 +58,16 @@ pub fn encode(input: &[u8]) -> String {
     unsafe { String::from_utf8_unchecked(result) }
 }
 
-#[cfg_attr(feature = "python", pyfunction)]
-pub fn decode(input: &str) -> Option<Vec<u8>> {
+pub fn decode(input: &str) -> Result<Vec<u8>, DecodeError> {
     let mut result = Vec::new();
     for chunk in input.as_bytes().chunks(8) {
         let buf = {
             let mut buf = [0u8; 8];
             for (i, &ch) in chunk.iter().enumerate() {
                 match INVERSE_ALPHABET.get(ch as usize) {
-                    Some(-1) => return None,
+                    Some(-1) => return Err(DecodeError),
                     Some(x) => buf[i] = *x as u8,
-                    None => return None,
+                    None => return Err(DecodeError),
                 };
             }
             buf
@@ -70,16 +82,22 @@ pub fn decode(input: &str) -> Option<Vec<u8>> {
     for _ in 0..(result.len() - input.len() * 5 / 8) {
         result.pop();
     }
-    Some(result)
+    Ok(result)
 }
 
 #[cfg(feature = "python")]
 #[pymodule]
 fn zbase32(py: Python, m: &PyModule) -> PyResult<()> {
+    create_exception!(zbase32, DecodeError, PyException);
+
     m.add_function(wrap_pyfunction!(encode, m)?)?;
+    m.add("DecodeError", py.get_type::<DecodeError>())?;
     #[pyfn(m)]
-    fn decode<'a>(py: Python<'a>, input: &'a str) -> Option<&'a PyBytes> {
-        crate::decode(input).as_ref().map(|b| PyBytes::new(py, b))
+    fn decode<'a>(py: Python<'a>, input: &'a str) -> PyResult<&'a PyBytes> {
+        match crate::decode(input) {
+            Ok(b) => Ok(PyBytes::new(py, &b)),
+            Err(_) => Err(DecodeError::new_err("Non-zbase32 digit found")),
+        }
     }
     Ok(())
 }
@@ -94,7 +112,7 @@ mod tests {
 
     #[test]
     fn simple_decode() {
-        assert_eq!(decode("cf3seamu"), Some(b"asdas".to_vec()))
+        assert_eq!(decode("cf3seamu"), Ok(b"asdas".to_vec()))
     }
 
     #[test]
@@ -104,16 +122,18 @@ mod tests {
 
     #[test]
     fn invalid_decode() {
-        assert_eq!(decode("bar#"), None)
+        assert_eq!(decode("bar#"), Err(DecodeError))
     }
 
     quickcheck! {
         fn prop(input: Vec<u8>) -> bool {
             decode(&encode(&input)).unwrap() == input
+
         }
     }
 
     quickcheck! {
+        #[allow(unused_must_use)]
         fn not_panic(input: String) -> bool {
             decode(&input);
             true
