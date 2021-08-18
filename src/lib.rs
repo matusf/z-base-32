@@ -1,7 +1,5 @@
 #[cfg(feature = "python")]
 mod python;
-#[cfg(feature = "python")]
-use pyo3::{create_exception, exceptions::PyException, prelude::*, types::PyBytes};
 
 #[cfg(test)]
 #[macro_use]
@@ -28,7 +26,6 @@ impl fmt::Display for DecodeError {
     }
 }
 
-#[cfg_attr(feature = "python", pyfunction)]
 pub fn encode(input: &[u8]) -> String {
     let mut result = Vec::new();
     let chunks = input.chunks(5);
@@ -83,23 +80,6 @@ pub fn decode(input: &str) -> Result<Vec<u8>, DecodeError> {
         result.pop();
     }
     Ok(result)
-}
-
-#[cfg(feature = "python")]
-#[pymodule]
-fn zbase32(py: Python, m: &PyModule) -> PyResult<()> {
-    create_exception!(zbase32, DecodeError, PyException);
-
-    m.add_function(wrap_pyfunction!(encode, m)?)?;
-    m.add("DecodeError", py.get_type::<DecodeError>())?;
-    #[pyfn(m)]
-    fn decode<'a>(py: Python<'a>, input: &'a str) -> PyResult<&'a PyBytes> {
-        match crate::decode(input) {
-            Ok(b) => Ok(PyBytes::new(py, &b)),
-            Err(_) => Err(DecodeError::new_err("Non-zbase32 digit found")),
-        }
-    }
-    Ok(())
 }
 
 #[cfg(test)]
