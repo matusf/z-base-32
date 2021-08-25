@@ -55,7 +55,7 @@ jobs:
         with:
           maturin-version: latest
           command: build
-          args: --release --cargo-extra-args "--features python"
+          args: --release
 
   rust-publish:
     if: startsWith(github.ref, 'refs/tags/')
@@ -96,7 +96,7 @@ jobs:
         with:
           maturin-version: latest
           command: build
-          args: --release --interpreter python${{matrix.python_version}} --cargo-extra-args "--features python"
+          args: --release --interpreter python${{matrix.python_version}}
 
       - name: Install wheels
         if:  matrix.os == 'windows-latest'
@@ -118,4 +118,4 @@ jobs:
         if: github.event_name == 'release' && github.event.action == 'created'
         env:
           MATURIN_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: maturin publish --skip-existing -u __token__ --cargo-extra-args "--features python"
+        run: maturin publish --skip-existing -u __token__
