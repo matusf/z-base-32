@@ -1,5 +1,7 @@
 # z-base-32
 
+![ci](https://github.com/matusf/z-base-32/actions/workflows/ci.yml/badge.svg)
+
 The `z-base-32` is a human oriented base32 encoding.
 
 ## API
