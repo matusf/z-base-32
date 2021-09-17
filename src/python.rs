@@ -4,7 +4,7 @@ create_exception!(zbase32, DecodeError, PyException);
 
 #[inline]
 #[pyfunction]
-#[pyo3(text_signature = "(input: bytes) -> str")]
+#[pyo3(text_signature = "(input: str) -> bytes")]
 /// Decode zbase32 encoded string to bytes
 fn decode<'a>(py: Python<'a>, input: &'a str) -> PyResult<&'a PyBytes> {
     match crate::decode(input) {
@@ -15,7 +15,7 @@ fn decode<'a>(py: Python<'a>, input: &'a str) -> PyResult<&'a PyBytes> {
 
 #[inline]
 #[pyfunction]
-#[pyo3(text_signature = "(input: str) -> bytes")]
+#[pyo3(text_signature = "(input: bytes) -> str")]
 /// Encode bytes using a zbase32 and return encoded string
 fn encode(input: &[u8]) -> String {
     crate::encode(input)
