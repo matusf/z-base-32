@@ -32,10 +32,10 @@ fn main() {
 
 ### Building
 
-This crate can be compiled with feature flag `python` in which case it produces python bindings. To build a Python wheels use [`maturin`](https://github.com/PyO3/maturin):
+This crate can be compiled with feature flag `python` in which case it produces Python bindings. To build a Python wheels use [`maturin`](https://github.com/PyO3/maturin):
 
 ```console
-maturin build --cargo-extra-args="--features python"
+maturin build
 ```
 
 ### API
