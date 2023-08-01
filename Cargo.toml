@@ -23,7 +23,7 @@ python = ["pyo3"]
 [dependencies]
 
 [dependencies.pyo3]
-version = "0.19.1"
+version = "0.19.2"
 features = ["extension-module"]
 optional = true
 
