@@ -119,6 +119,7 @@ jobs:
           command: upload
           args: --non-interactive --skip-existing *
 
+      - uses: actions/checkout@v4
       - name: Install Rust
         uses: dtolnay/rust-toolchain@master
         with:
