@@ -5,7 +5,7 @@ mod python;
 #[macro_use]
 extern crate quickcheck;
 
-use std::fmt;
+use std::{error::Error, fmt};
 
 const ALPHABET: &[u8] = b"ybndrfg8ejkmcpqxot1uwisza345h769";
 const INVERSE_ALPHABET: [i8; 123] = [
@@ -19,6 +19,8 @@ const INVERSE_ALPHABET: [i8; 123] = [
 
 #[derive(Debug, PartialEq)]
 pub struct DecodeError;
+
+impl Error for DecodeError {}
 
 impl fmt::Display for DecodeError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
