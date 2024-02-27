@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## [0.1.4] - 2024-02-27
+
 ### Added
 
 - Enable trusted publishing for PyPI
@@ -12,7 +14,7 @@
 
 - bump pyo3 and maturin versions
 
-## [0.1.3] - 2021-11-21
+## [0.1.3] - 2023-11-21
 
 ### Changed
 
@@ -35,7 +37,7 @@
 ### Added
 
 - initial release
-
-[0.1.3]: https://github.com/matusf/z-base-32/compare/0.1.2...0.1.3
-[0.1.2]: https://github.com/matusf/z-base-32/compare/0.1.1...0.1.2
-[0.1.1]: https://github.com/matusf/z-base-32/compare/0.1.0...0.1.1
+[0.1.4]: <https://github.com/matusf/z-base-32/compare/0.1.3...0.1.4>
+[0.1.3]: <https://github.com/matusf/z-base-32/compare/0.1.2...0.1.3>
+[0.1.2]: <https://github.com/matusf/z-base-32/compare/0.1.1...0.1.2>
+[0.1.1]: <https://github.com/matusf/z-base-32/compare/0.1.0...0.1.1>

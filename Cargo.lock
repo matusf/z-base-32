@@ -525,7 +525,7 @@ checksum = "0770833d60a970638e989b3fa9fd2bb1aaadcf88963d1659fd7d9990196ed2d6"
 
 [[package]]
 name = "z-base-32"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "clap",
