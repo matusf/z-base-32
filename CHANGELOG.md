@@ -1,14 +1,26 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Enable trusted publishing for PyPI
+- Add CLI utillity
+- Implement Error trait for `DecodeError`
+
+### Changed
+
+- bump pyo3 and maturin versions
+
 ## [0.1.3] - 2021-11-21
 
-## Changed
+### Changed
 
 - bump pyo3 and maturin versions
 
 ## [0.1.2] - 2021-08-25
 
-## Changed
+### Changed
 
 - fix maturin version in `pyproject.toml`
 
