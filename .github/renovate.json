@@ -3,5 +3,9 @@
   "extends": [
     "config:base"
   ],
-  "automerge": true
+  "automerge": true,
+  "ignorePaths": [
+    ".github/workflows/build.yml",
+    ".github/workflows/release.yml"
+  ]
 }
