@@ -27,7 +27,7 @@ cli = ["dep:clap", "dep:anyhow"]
 
 [dependencies]
 pyo3 = {version = "0.20.3", features = ["extension-module"], optional = true}
-clap = {version = "4.5.3", features = ["derive"], optional = true}
+clap = {version = "4.5.4", features = ["derive"], optional = true}
 anyhow = {version = "1", optional = true}
 
 [dev-dependencies]
