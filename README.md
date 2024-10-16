@@ -19,7 +19,7 @@ cargo add z-base-32
 The library exposes two functions with the following signatures and an error type:
 
 ```rs
-pub fn encode(input: &[u8]) -> String;
+pub fn encode(input: impl AsRef<[u8]>) -> String;
 
 pub fn decode(input: &str) -> Result<Vec<u8>, DecodeError>;
 

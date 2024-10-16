@@ -28,7 +28,8 @@ impl fmt::Display for DecodeError {
     }
 }
 
-pub fn encode(input: &[u8]) -> String {
+pub fn encode(input: impl AsRef<[u8]>) -> String {
+    let input = input.as_ref();
     let mut result = Vec::new();
     let chunks = input.chunks(5);
 
@@ -90,6 +91,17 @@ mod tests {
     #[test]
     fn simple_encode() {
         assert_eq!(encode(b"asdasd"), "cf3seamuco".to_string());
+    }
+
+    #[test]
+    fn encode_str() {
+        assert_eq!(encode("asdasd"), "cf3seamuco".to_string());
+    }
+
+    #[test]
+    fn encode_string() {
+        let string = String::from("asdasd");
+        assert_eq!(encode(string), "cf3seamuco".to_string());
     }
 
     #[test]
