@@ -44,6 +44,8 @@ fn encode(reader: &mut impl Read, mut writer: &mut impl Write, wrap: usize) -> R
         buf.as_bytes()
             .chunks(wrap)
             .map(|chunk| {
+                // SAFETY: This is safe since the encoded `buf` string contains only
+                // symbols from the basic ASCII set
                 let chars = unsafe { std::str::from_utf8_unchecked(chunk) };
                 write!(&mut writer, "{}\n", chars)
             })
