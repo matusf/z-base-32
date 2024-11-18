@@ -30,7 +30,7 @@ impl fmt::Display for DecodeError {
 
 pub fn encode(input: impl AsRef<[u8]>) -> String {
     let input = input.as_ref();
-    let mut result = Vec::new();
+    let mut result = String::new();
     let chunks = input.chunks(5);
 
     for chunk in chunks {
@@ -41,21 +41,19 @@ pub fn encode(input: impl AsRef<[u8]>) -> String {
             }
             buf
         };
-        result.push(ALPHABET[((buf[0] & 0xF8) >> 3) as usize]);
-        result.push(ALPHABET[((buf[0] & 0x07) << 2 | (buf[1] & 0xC0) >> 6) as usize]);
-        result.push(ALPHABET[((buf[1] & 0x3E) >> 1) as usize]);
-        result.push(ALPHABET[((buf[1] & 0x01) << 4 | (buf[2] & 0xF0) >> 4) as usize]);
-        result.push(ALPHABET[((buf[2] & 0x0F) << 1 | (buf[3] & 0x80) >> 7) as usize]);
-        result.push(ALPHABET[((buf[3] & 0x7C) >> 2) as usize]);
-        result.push(ALPHABET[((buf[3] & 0x03) << 3 | (buf[4] & 0xE0) >> 5) as usize]);
-        result.push(ALPHABET[(buf[4] & 0x1F) as usize]);
+        result.push(ALPHABET[((buf[0] & 0xF8) >> 3) as usize] as char);
+        result.push(ALPHABET[((buf[0] & 0x07) << 2 | (buf[1] & 0xC0) >> 6) as usize] as char);
+        result.push(ALPHABET[((buf[1] & 0x3E) >> 1) as usize] as char);
+        result.push(ALPHABET[((buf[1] & 0x01) << 4 | (buf[2] & 0xF0) >> 4) as usize] as char);
+        result.push(ALPHABET[((buf[2] & 0x0F) << 1 | (buf[3] & 0x80) >> 7) as usize] as char);
+        result.push(ALPHABET[((buf[3] & 0x7C) >> 2) as usize] as char);
+        result.push(ALPHABET[((buf[3] & 0x03) << 3 | (buf[4] & 0xE0) >> 5) as usize] as char);
+        result.push(ALPHABET[(buf[4] & 0x1F) as usize] as char);
     }
 
     let expected_len = (input.len() as f32 * 8.0 / 5.0).ceil() as usize;
-    for _ in 0..(result.len() - expected_len) {
-        result.pop();
-    }
-    unsafe { String::from_utf8_unchecked(result) }
+    result.truncate(expected_len);
+    result
 }
 
 pub fn decode(input: &str) -> Result<Vec<u8>, DecodeError> {
