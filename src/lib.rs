@@ -1,3 +1,6 @@
+#![doc = include_str!("../README.md")]
+#![deny(missing_docs)]
+
 #[cfg(feature = "python")]
 mod python;
 
@@ -17,6 +20,7 @@ const INVERSE_ALPHABET: [i8; 123] = [
     23,
 ];
 
+/// Error decoding input bytes.
 #[derive(Debug, PartialEq)]
 pub struct DecodeError;
 
@@ -28,6 +32,15 @@ impl fmt::Display for DecodeError {
     }
 }
 
+/// Z-base32 encodes `input`.
+///
+/// # Examples
+///
+/// ```
+/// use zbase32::encode;
+///
+/// assert_eq!(encode("asdasd"), "cf3seamuco");
+/// ```
 pub fn encode(input: impl AsRef<[u8]>) -> String {
     let input = input.as_ref();
     let mut result = Vec::new();
@@ -58,6 +71,15 @@ pub fn encode(input: impl AsRef<[u8]>) -> String {
     unsafe { String::from_utf8_unchecked(result) }
 }
 
+/// Decodes z-base-32 encoded data into a vector of bytes.
+///
+/// # Examples
+///
+/// ```
+/// use zbase32::decode;
+///
+/// assert_eq!(decode("cf3seamu"), Ok(b"asdas".to_vec()))
+/// ```
 pub fn decode(input: &str) -> Result<Vec<u8>, DecodeError> {
     let mut result = Vec::new();
     for chunk in input.as_bytes().chunks(8) {
