@@ -4,6 +4,7 @@
     "config:base"
   ],
   "automerge": true,
+  "automergeSchedule": ["* * * * 3"],
   "ignorePaths": [
     ".github/workflows/build.yml",
     ".github/workflows/release.yml"
