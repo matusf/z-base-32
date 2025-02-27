@@ -32,6 +32,12 @@ anyhow = {version = "1.0.95", optional = true}
 
 [dev-dependencies]
 quickcheck = "1.0.3"
+criterion = "0.5.1"
+rand = "0.8.5"
+
+[[bench]]
+name = "benchmarks"
+harness = false
 
 # The profile that 'cargo dist' will build with
 [profile.dist]
