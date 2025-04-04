@@ -28,14 +28,12 @@ pub struct DecodeError;
 
 #### Example
 
-```rs
+```rust
 use zbase32::{encode, decode};
 
-fn main() {
-    assert_eq!(encode(b"foo"), "c3zs6".to_string());
-    assert_eq!(Ok(b"foo"), decode("c3zs6".to_string()));
-    assert_eq!(decode(&encode(b"foo")).unwrap(), b"foo")
-}
+assert_eq!(encode("foo"), "c3zs6");
+assert_eq!(Ok(b"foo".into()), decode("c3zs6"));
+assert_eq!(decode(&encode("foo")).unwrap(), b"foo")
 ```
 
 ### CLI
