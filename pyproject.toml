@@ -13,6 +13,7 @@ pytest = true
 [project]
 name = "z-base-32"
 requires-python = ">=3.10"
+dynamic = ["version"]
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
