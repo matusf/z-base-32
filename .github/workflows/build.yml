@@ -178,14 +178,3 @@ jobs:
         with:
           command: upload
           args: --non-interactive --skip-existing wheels-*/*
-
-      - uses: actions/checkout@v4
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: stable
-
-      - name: Publish on crates.io
-        run: |
-          cargo login ${{ secrets.CRATES_TOKEN }}
-          cargo publish
