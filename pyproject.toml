@@ -8,6 +8,7 @@ features = ["python", "pyo3/extension-module"]
 [tool.maturin.generate-ci.github]
 trusted-publishing = true
 publishing-environment = "release"
+pytest = true
 
 [project]
 name = "z-base-32"

@@ -21,25 +21,3 @@ jobs:
 
       - name: Test Rust implementation
         run: cargo test --all-features
-
-  test-python:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: stable
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: pip install maturin
-      - run: pip install .
-
-      - name: Test Python implementation
-        run: python -m unittest test.py
