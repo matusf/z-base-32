@@ -7,7 +7,6 @@ features = ["python", "pyo3/extension-module"]
 
 [tool.maturin.generate-ci.github]
 trusted-publishing = true
-# Optional: name of the GitHub Actions environment to use for the release job
 publishing-environment = "release"
 
 [project]
