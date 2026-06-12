@@ -1,12 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
-  ],
+  "extends": ["config:base"],
   "automerge": true,
   "automergeSchedule": ["* * * * 3"],
   "ignorePaths": [
-    ".github/workflows/build.yml",
+    ".github/workflows/python.yml",
     ".github/workflows/release.yml"
   ]
 }
