@@ -5,9 +5,14 @@ build-backend = "maturin"
 [tool.maturin]
 features = ["python", "pyo3/extension-module"]
 
+[tool.maturin.generate-ci.github]
+trusted-publishing = true
+# Optional: name of the GitHub Actions environment to use for the release job
+publishing-environment = "release"
+
 [project]
 name = "z-base-32"
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Rust",
     "Programming Language :: Python :: Implementation :: CPython",
