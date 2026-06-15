@@ -1,11 +1,38 @@
 use std::{
+    fmt::Debug,
     fs::File,
     io::{self, BufRead, Read, Write},
     path::PathBuf,
 };
 
-use anyhow::Result;
 use clap::Parser;
+use zbase32::DecodeError;
+
+enum Error {
+    IoError(io::Error),
+    DecodeError,
+}
+
+impl From<std::io::Error> for Error {
+    fn from(value: std::io::Error) -> Self {
+        Self::IoError(value)
+    }
+}
+
+impl From<DecodeError> for Error {
+    fn from(_: DecodeError) -> Self {
+        Self::DecodeError
+    }
+}
+
+impl Debug for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::IoError(error) => write!(f, "{error}"),
+            Self::DecodeError => write!(f, "Invalid character in input"),
+        }
+    }
+}
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -22,8 +49,8 @@ struct Args {
     wrap: usize,
 }
 
-fn decode(reader: impl Read, writer: &mut impl Write) -> Result<()> {
-    let buf: Result<Vec<String>, std::io::Error> = io::BufReader::new(reader).lines().collect();
+fn decode(reader: impl Read, writer: &mut impl Write) -> Result<(), Error> {
+    let buf: Result<Vec<String>, io::Error> = io::BufReader::new(reader).lines().collect();
     let buf: String = buf?
         .into_iter()
         .map(|mut line| {
@@ -36,7 +63,11 @@ fn decode(reader: impl Read, writer: &mut impl Write) -> Result<()> {
     Ok(())
 }
 
-fn encode(reader: &mut impl Read, mut writer: &mut impl Write, wrap: usize) -> Result<()> {
+fn encode(
+    reader: &mut impl Read,
+    mut writer: &mut impl Write,
+    wrap: usize,
+) -> Result<(), io::Error> {
     let mut buf = Vec::new();
     reader.read_to_end(&mut buf)?;
     let buf = zbase32::encode(&buf);
@@ -55,21 +86,14 @@ fn encode(reader: &mut impl Read, mut writer: &mut impl Write, wrap: usize) -> R
     return Ok(());
 }
 
-fn main() -> Result<()> {
+fn main() -> Result<(), Error> {
     let args = Args::parse();
 
-    if args.decode {
-        if let Some(file) = args.file {
-            decode(File::open(&file)?, &mut io::stdout())?;
-        } else {
-            decode(io::stdin().lock(), &mut io::stdout())?;
-        };
-    } else {
-        if let Some(file) = args.file {
-            encode(&mut File::open(&file)?, &mut io::stdout(), args.wrap)
-        } else {
-            encode(&mut io::stdin().lock(), &mut io::stdout(), args.wrap)
-        }?;
+    match (args.decode, args.file) {
+        (true, None) => decode(io::stdin().lock(), &mut io::stdout())?,
+        (true, Some(file)) => decode(File::open(&file)?, &mut io::stdout())?,
+        (false, None) => encode(&mut io::stdin().lock(), &mut io::stdout(), args.wrap)?,
+        (false, Some(file)) => encode(&mut File::open(&file)?, &mut io::stdout(), args.wrap)?,
     };
 
     Ok(())

@@ -23,12 +23,11 @@ required-features = ["cli"]
 
 [features]
 python = ["dep:pyo3"]
-cli = ["dep:clap", "dep:anyhow"]
+cli = ["dep:clap"]
 
 [dependencies]
 pyo3 = {version = "0.29", features = ["extension-module"], optional = true}
 clap = {version = "4", features = ["derive"], optional = true}
-anyhow = {version = "1", optional = true}
 
 [dev-dependencies]
 quickcheck = "1"

@@ -665,7 +665,6 @@ dependencies = [
 name = "z-base-32"
 version = "0.1.4"
 dependencies = [
- "anyhow",
  "clap",
  "pyo3",
  "quickcheck",
