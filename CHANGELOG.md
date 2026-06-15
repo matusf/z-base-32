@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## [0.1.5] - 2026-06-15
+
+### Added
+
+- Add docs
+
+### Changed
+
+- Update dependencies (pyo3, clap, anyhow, quickcheck)
+- Set version as dynamic in pyproject.toml (#80)
+- Drop anyhow dependency from cli
+
 ## [0.1.4] - 2024-02-27
 
 ### Added
@@ -37,6 +49,7 @@
 ### Added
 
 - initial release
+[0.1.5]: <https://github.com/matusf/z-base-32/compare/0.1.4...0.1.5>
 [0.1.4]: <https://github.com/matusf/z-base-32/compare/0.1.3...0.1.4>
 [0.1.3]: <https://github.com/matusf/z-base-32/compare/0.1.2...0.1.3>
 [0.1.2]: <https://github.com/matusf/z-base-32/compare/0.1.1...0.1.2>

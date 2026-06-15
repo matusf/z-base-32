@@ -1,6 +1,6 @@
 # z-base-32
 
-[![Crates](https://img.shields.io/crates/v/z-base-32.svg)](https://crates.io/crates/z-base-32) [![Docs](https://docs.rs/z-base-32/badge.svg)](https://docs.rs/z-base-32) [
+[![](https://img.shields.io/crates/v/z-base-32.svg)](https://crates.io/crates/z-base-32) [![Docs](https://docs.rs/z-base-32/badge.svg)](https://docs.rs/z-base-32)
 
 The `z-base-32` is a human-oriented base-32 encoding.
 
