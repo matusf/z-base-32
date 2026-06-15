@@ -1,3 +1,17 @@
+//! z-base-32: a human-oriented base-32 encoding.
+//!
+//! # Examples
+//!
+//! ```rust
+//! use zbase32::{decode, encode, DecodeError};
+//!
+//! assert_eq!(encode(b"hello"), "pb1sa5dx");
+//! assert_eq!(decode("pb1sa5dx"), Ok(b"hello".to_vec()));
+//!
+//! // Invalid characeter in input string results in an DecodeError
+//! assert_eq!(decode("bar#"), Err(DecodeError));
+//! ```
+
 #[cfg(feature = "python")]
 mod python;
 
@@ -17,7 +31,8 @@ const INVERSE_ALPHABET: [i8; 123] = [
     23,
 ];
 
-#[derive(Debug, PartialEq)]
+/// Invalid characted encountered during decoding
+#[derive(Debug, PartialEq, Eq)]
 pub struct DecodeError;
 
 impl Error for DecodeError {}
@@ -28,6 +43,15 @@ impl fmt::Display for DecodeError {
     }
 }
 
+/// Encode input into a z-base-32 encoded [`String`]
+///
+/// # Examples
+///
+/// ```rust
+/// use zbase32::encode;
+///
+/// assert_eq!(encode(b"hello"), "pb1sa5dx");
+/// ```
 pub fn encode(input: impl AsRef<[u8]>) -> String {
     let input = input.as_ref();
     let mut result = Vec::new();
@@ -55,9 +79,27 @@ pub fn encode(input: impl AsRef<[u8]>) -> String {
     for _ in 0..(result.len() - expected_len) {
         result.pop();
     }
+    // SAFETY: `result` contains only bytes from `ALPHABET` which contains a fixed
+    // subset ACSII encoded bytes that are also valid UTF-8.
     unsafe { String::from_utf8_unchecked(result) }
 }
 
+/// Decode input into a new [`Vec`]
+///
+/// # Errors
+///
+/// Return [`DecodeError`] when there is an invalid character in the input
+///
+/// # Examples
+///
+/// ```rust
+/// use zbase32::{decode, DecodeError};
+///
+/// assert_eq!(decode("pb1sa5dx"), Ok(b"hello".to_vec()));
+///
+/// // Invalid characeter in input string results in an `DecodeError`
+/// assert_eq!(decode("bar#"), Err(DecodeError));
+/// ```
 pub fn decode(input: &str) -> Result<Vec<u8>, DecodeError> {
     let mut result = Vec::new();
     for chunk in input.as_bytes().chunks(8) {
@@ -65,10 +107,9 @@ pub fn decode(input: &str) -> Result<Vec<u8>, DecodeError> {
             let mut buf = [0u8; 8];
             for (i, &ch) in chunk.iter().enumerate() {
                 match INVERSE_ALPHABET.get(ch as usize) {
-                    Some(-1) => return Err(DecodeError),
+                    Some(-1) | None => return Err(DecodeError),
                     Some(x) => buf[i] = *x as u8,
-                    None => return Err(DecodeError),
-                };
+                }
             }
             buf
         };
@@ -106,17 +147,17 @@ mod tests {
 
     #[test]
     fn simple_decode() {
-        assert_eq!(decode("cf3seamu"), Ok(b"asdas".to_vec()))
+        assert_eq!(decode("cf3seamu"), Ok(b"asdas".to_vec()));
     }
 
     #[test]
     fn encode_decode() {
-        assert_eq!(decode(&encode(b"foo")).unwrap(), b"foo")
+        assert_eq!(decode(&encode(b"foo")).unwrap(), b"foo");
     }
 
     #[test]
     fn invalid_decode() {
-        assert_eq!(decode("bar#"), Err(DecodeError))
+        assert_eq!(decode("bar#"), Err(DecodeError));
     }
 
     quickcheck! {

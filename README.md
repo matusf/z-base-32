@@ -1,6 +1,6 @@
 # z-base-32
 
-![ci](https://github.com/matusf/z-base-32/actions/workflows/ci.yml/badge.svg)
+[![Crates](https://img.shields.io/crates/v/z-base-32.svg)](https://crates.io/crates/z-base-32) [![Docs](https://docs.rs/z-base-32/badge.svg)](https://docs.rs/z-base-32) [
 
 The `z-base-32` is a human-oriented base-32 encoding.
 
@@ -32,7 +32,7 @@ pub struct DecodeError;
 use zbase32::{encode, decode};
 
 fn main() {
-    assert_eq!(encode(b"foo"), "c3zs6".to_string());
+    assert_eq!(encode(b"foo"), "c3zs6");
     assert_eq!(Ok(b"foo"), decode("c3zs6".to_string()));
     assert_eq!(decode(&encode(b"foo")).unwrap(), b"foo")
 }
