@@ -30,7 +30,12 @@ pyo3 = {version = "0.29", features = ["extension-module"], optional = true}
 clap = {version = "4", features = ["derive"], optional = true}
 
 [dev-dependencies]
+divan = {version = "5.0.1", package = "codspeed-divan-compat"}
 quickcheck = "1"
+
+[[bench]]
+name = "zbase32"
+harness = false
 
 # The profile that 'cargo dist' will build with
 [profile.dist]
